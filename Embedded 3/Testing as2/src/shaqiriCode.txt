@@ -1,0 +1,675 @@
+#include "mbox.h"
+#include "uart.h"
+#include "colors.h"
+
+#define MAX_CMD_SIZE 100
+#define OS_NAME "Shirin_A2"
+static char cli_buffer[MAX_CMD_SIZE];
+const char *commands[] = {"help", "clear", "setcolor", "showinfo"};
+#define MAX_COMMANDS 4 // Number of available commands
+typedef unsigned int size_t;
+
+#define MAX_CMD_SIZE 128
+#define HISTORY_SIZE 10
+
+// Global variables to store command history
+char command_history[HISTORY_SIZE][MAX_CMD_SIZE];
+int history_index = 0;
+int current_history_index = 0;
+
+// Define custom_strncpy function
+char *custom_strncpy(char *dest, const char *src, size_t n)
+{
+    size_t i;
+    for (i = 0; i < n && src[i] != '\0'; i++)
+    {
+        dest[i] = src[i];
+    }
+    for (; i < n; i++)
+    {
+        dest[i] = '\0';
+    }
+    return dest;
+}
+
+// Custom strcmp function
+int custom_strcmp(const char *s1, const char *s2)
+{
+    while (*s1 && *s2 && *s1 == *s2)
+    {
+        ++s1;
+        ++s2;
+    }
+    return *s1 - *s2;
+}
+// Custom strncmp function
+int custom_strncmp(const char *s1, const char *s2, int n)
+{
+    while (n > 0 && *s1 && *s2 && *s1 == *s2)
+    {
+        ++s1;
+        ++s2;
+        --n;
+    }
+    if (n == 0)
+    {
+        return 0; // Reached the comparison limit
+    }
+    return *s1 - *s2;
+}
+
+// Custom custom_strlen function
+int custom_strlen(const char *str)
+{
+    int len = 0;
+    while (str[len] != '\0')
+    {
+        len++;
+    }
+    return len;
+}
+
+// Custom tolower function
+char custom_tolower(char c)
+{
+    if (c >= 'A' && c <= 'Z')
+        return c + ('a' - 'A');
+    return c;
+}
+
+// Custom strcpy function
+void custom_strcpy(char *dest, const char *src)
+{
+    while (*src)
+    {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
+void custom_strcat(char *dest, const char *src)
+{
+    while (*dest != '\0')
+    {
+        dest++;
+    }
+    while (*src != '\0')
+    {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
+// Custom strtok function
+char *custom_strtok(char *str, const char *delim)
+{
+    static char *p = '\0';
+    if (str != '\0')
+        p = str;
+
+    if (p == '\0' || *p == '\0')
+        return '\0';
+
+    char *start = p;
+
+    while (*p != '\0')
+    {
+        const char *d = delim;
+        while (*d != '\0')
+        {
+            if (*p == *d)
+            {
+                *p = '\0';
+                ++p;
+                if (*p == '\0')
+                    p = '\0';
+                return start;
+            }
+            ++d;
+        }
+        ++p;
+    }
+
+    return start;
+}
+
+void help_command(char *command_name)
+{
+    uart_puts("\nReceived command name in help_command: ");
+    uart_puts(command_name);
+    // Implement help functionality here
+    if (command_name == '\0')
+    {
+        // If no specific command name provided after "help"
+        uart_puts("\nCommands:\n");
+        uart_puts("---------------------------------------------------------------------\n");
+        uart_puts("| No. | Command              | Usage                                 |\n");
+        uart_puts("---------------------------------------------------------------------\n");
+        uart_puts("| 1.  | help                 | Show brief information of all commands|\n");
+        uart_puts("| 2.  | help <command_name>  | Show full information of the command  |\n");
+        uart_puts("| 3.  | clear                | Clear screen                          |\n");
+        uart_puts("| 4.  | setcolor             | Set text and/or background color      |\n");
+        uart_puts("| 5.  | showinfo             | Show board revision and MAC address   |\n");
+        uart_puts("------------------------------------------------------------------\n");
+    }
+    else
+    {
+        // Implement help for specific command
+        // You need to add code here to provide full information about the specified command
+        if (custom_strcmp(command_name, "help") == 0)
+        {
+            uart_puts("\nFull information of the command 'help':\n");
+            uart_puts("help - Display brief information or full information of commands\n");
+            uart_puts("Usage: help [command_name]\n");
+            uart_puts("If no command_name provided, displays brief information about all commands.\n");
+            uart_puts("If command_name provided, displays full information about the specified command.\n");
+        }
+        else if (custom_strcmp(command_name, "clear") == 0)
+        {
+            uart_puts("\nFull information of the command 'clear':\n");
+            uart_puts("clear - Clear the screen\n");
+            uart_puts("Usage: clear\n");
+            uart_puts("Clears the screen and moves the cursor to the top-left corner.\n");
+        }
+        else if (custom_strcmp(command_name, "setcolor") == 0)
+        {
+            uart_puts("\nFull information of the command 'setcolor':\n");
+            uart_puts("setcolor - Set text and/or background color\n");
+            uart_puts("Usage: setcolor -t <text_color> -b <background_color>\n");
+            uart_puts("Options:\n");
+            uart_puts("  -t: Set text color\n");
+            uart_puts("  -b: Set background color\n");
+            uart_puts("Example: setcolor -t red -b black\n");
+        }
+        else if (custom_strcmp(command_name, "showinfo") == 0)
+        {
+            uart_puts("\nFull information of the command 'showinfo':\n");
+            uart_puts("showinfo - Show board revision and MAC address\n");
+            uart_puts("Usage: showinfo\n");
+            uart_puts("This command displays the board revision and MAC address.\n");
+        }
+        else
+        {
+            uart_puts("\nUnknown command: ");
+            uart_puts(command_name);
+            uart_puts("\n");
+        }
+    }
+}
+
+void clear_command()
+{
+    // Implement clear screen functionality
+    uart_puts("\033[2J"); // ANSI escape sequence to clear screen
+}
+
+void setcolor_command(char *color_name)
+{
+    uart_puts("\nChoose which color(s) to change (t = text, b = background, or a = both): ");
+    char choice = uart_getc(); // Read a single character from user input
+
+    // Define variables to store the ANSI escape sequences for text and background colors
+    char *text_color = "";
+    char *bg_color = "";
+
+    switch (choice)
+    {
+    case 't':
+        // Change text color
+        uart_puts("Choose text color (black, red, green, yellow, blue, magenta, cyan, white): ");
+        choice = uart_getc(); // Read a single character from user input
+        switch (choice)
+        {
+        case 'b':
+            text_color = COLOR_BLACK; // Set text color to black
+            break;
+        case 'r':
+            text_color = COLOR_RED; // Set text color to red
+            break;
+        case 'g':
+            text_color = COLOR_GREEN; // Set text color to green
+            break;
+        case 'y':
+            text_color = COLOR_YELLOW; // Set text color to yellow
+            break;
+        case 'l':
+            text_color = COLOR_BLUE; // Set text color to blue
+            break;
+        case 'm':
+            text_color = COLOR_MAGENTA; // Set text color to magenta
+            break;
+        case 'c':
+            text_color = COLOR_CYAN; // Set text color to cyan
+            break;
+        case 'w':
+            text_color = COLOR_WHITE; // Set text color to white
+            break;
+        default:
+            uart_puts("Invalid text color. Please choose again.");
+            return;
+        }
+        break;
+    case 'b':
+        // Change background color
+        uart_puts("Choose background color (black, red, green, yellow, blue, magenta, cyan, white): ");
+        choice = uart_getc(); // Read a single character from user input
+        switch (choice)
+        {
+        case 'b':
+            bg_color = BG_BLACK; // Set background color to black
+            break;
+        case 'r':
+            bg_color = BG_RED; // Set background color to red
+            break;
+        case 'g':
+            bg_color = BG_GREEN; // Set background color to green
+            break;
+        case 'y':
+            bg_color = BG_YELLOW; // Set background color to yellow
+            break;
+        case 'l':
+            bg_color = BG_BLUE; // Set background color to blue
+            break;
+        case 'm':
+            bg_color = BG_MAGENTA; // Set background color to magenta
+            break;
+        case 'c':
+            bg_color = BG_CYAN; // Set background color to cyan
+            break;
+        case 'w':
+            bg_color = BG_WHITE; // Set background color to white
+            break;
+        default:
+            uart_puts("Invalid background color. Please choose again.");
+            return;
+        }
+        break;
+    case 'a':
+        // Change both text and background colors
+        uart_puts("Choose text color (black, red, green, yellow, blue, magenta, cyan, white): ");
+        choice = uart_getc(); // Read a single character from user input
+        switch (choice)
+        {
+        case 'b':
+            text_color = COLOR_BLACK; // Set text color to black
+            break;
+        case 'r':
+            text_color = COLOR_RED; // Set text color to red
+            break;
+        case 'g':
+            text_color = COLOR_GREEN; // Set text color to green
+            break;
+        case 'y':
+            text_color = COLOR_YELLOW; // Set text color to yellow
+            break;
+        case 'l':
+            text_color = COLOR_BLUE; // Set text color to blue
+            break;
+        case 'm':
+            text_color = COLOR_MAGENTA; // Set text color to magenta
+            break;
+        case 'c':
+            text_color = COLOR_CYAN; // Set text color to cyan
+            break;
+        case 'w':
+            text_color = COLOR_WHITE; // Set text color to white
+            break;
+        default:
+            uart_puts("Invalid text color. Please choose again.");
+            return;
+        }
+
+        uart_puts("Choose background color (black, red, green, yellow, blue, magenta, cyan, white): ");
+        choice = uart_getc(); // Read a single character from user input
+        switch (choice)
+        {
+        case 'b':
+            bg_color = BG_BLACK; // Set background color to black
+            break;
+        case 'r':
+            bg_color = BG_RED; // Set background color to red
+            break;
+        case 'g':
+            bg_color = BG_GREEN; // Set background color to green
+            break;
+        case 'y':
+            bg_color = BG_YELLOW; // Set background color to yellow
+            break;
+        case 'l':
+            bg_color = BG_BLUE; // Set background color to blue
+            break;
+        case 'm':
+            bg_color = BG_MAGENTA; // Set background color to magenta
+            break;
+        case 'c':
+            bg_color = BG_CYAN; // Set background color to cyan
+            break;
+        case 'w':
+            bg_color = BG_WHITE; // Set background color to white
+            break;
+        default:
+            uart_puts("Invalid background color. Please choose again.");
+            return;
+        }
+        break;
+    default:
+        // Invalid choice
+        uart_puts("Invalid choice. Please select 't', 'b', or 'a'.");
+        return;
+    }
+
+    // Apply the chosen colors
+    uart_puts(text_color);
+    uart_puts(bg_color);
+}
+void showinfo_command()
+{
+    // Mailbox data buffer: Read board revision, board MAC address, ARM clock rate, firmware revision, and UART clock rate
+    unsigned int mBuf[22];
+
+    // Set up the mailbox data buffer
+    mBuf[0] = 22 * 4;       // Message Buffer Size in bytes (22 elements * 4 bytes (32 bit) each)
+    mBuf[1] = MBOX_REQUEST; // Message Request Code (this is a request message)
+
+    mBuf[2] = 0x00010002; // TAG Identifier: Get board revision
+    mBuf[3] = 4;          // Value buffer size in bytes (max of request and response lengths)
+    mBuf[4] = 0;          // REQUEST CODE = 0
+    mBuf[5] = 0;          // clear output buffer (response data are mBuf[5])
+
+    mBuf[6] = 0x00010003; // TAG Identifier: Get board MAC address
+    mBuf[7] = 4;          // Value buffer size in bytes (max of request and response lengths)
+    mBuf[8] = 0;          // REQUEST CODE = 0
+    mBuf[9] = 0;          // clear output buffer (response data are mBuf[9])
+
+    mBuf[10] = 0x00030002; // TAG Identifier: Get ARM clock rate
+    mBuf[11] = 8;          // Value buffer size in bytes (max of request and response lengths)
+    mBuf[12] = 0;          // REQUEST CODE = 0
+    mBuf[13] = 3;          // clock id: ARM system clock
+    mBuf[14] = 0;          // clear output buffer (response data are mBuf[13] & mBuf[14])
+
+    mBuf[15] = 0x00000001; // TAG Identifier: Get firmware revision
+    mBuf[16] = 4;          // Value buffer size in bytes (max of request and response lengths)
+    mBuf[17] = 0;          // REQUEST CODE = 0
+    mBuf[18] = 0;          // clear output buffer (response data are mBuf[18])
+
+    mBuf[19] = 0x00030002; // TAG Identifier: Get UART clock rate
+    mBuf[20] = 8;          // Value buffer size in bytes (max of request and response lengths)
+    mBuf[21] = 0;          // REQUEST CODE = 0
+    mBuf[22] = 2;          // clock id: UART clock
+    mBuf[23] = 0;          // clear output buffer (response data are mBuf[22] & mBuf[23])
+
+    mBuf[24] = MBOX_TAG_LAST;
+
+    // Call the mailbox to get the information
+    if (mbox_call(ADDR(mBuf), MBOX_CH_PROP))
+    {
+        uart_puts("\nBoard Revision: ");
+        uart_hex(mBuf[5]);
+
+        uart_puts("\nBoard MAC Address: ");
+        uart_hex(mBuf[9]);
+
+        uart_puts("\nARM Clock Rate: ");
+        uart_dec(mBuf[14]);
+
+        uart_puts("\nFirmware Revision: ");
+        uart_hex(mBuf[18]);
+
+        uart_puts("\nUART Clock Rate: ");
+        uart_dec(mBuf[23]);
+    }
+    else
+    {
+        uart_puts("Unable to query!\n");
+    }
+}
+char *tab_handler(char *cli_buffer);
+
+void cli()
+{
+    static int index = 0;
+    char c = uart_getc();
+    uart_sendc(c);
+    static char token[MAX_CMD_SIZE]; // Declare token variable
+
+    if (c != '\n' && c != 127)
+    { // Check for newline and delete character
+        if (c == '\t')
+        { // Check if TAB key is pressed
+            uart_puts("\nTab key pressed\n");
+            char *completed_command = tab_handler(cli_buffer);
+            if (*completed_command != '\0')
+            { // Check if a valid completion is returned
+                // Print the completion
+                uart_puts(completed_command);
+                uart_puts(" ");
+
+                // Copy the completed command into cli_buffer
+                cli_buffer[0] = '\0'; // Clear existing content if necessary
+                custom_strcpy(cli_buffer, completed_command);
+
+                // Set the token to point to the completed command
+                custom_strcpy(token, completed_command);
+            }
+        }
+        if (index < MAX_CMD_SIZE - 1)
+        {
+            cli_buffer[index] = c; // Store into the buffer
+            index++;
+        }
+        else
+        {
+            // Buffer overflow handling if necessary
+        }
+    }
+    else if (c == 127)
+    { // Handle delete character (backspace)
+        if (index <= 0)
+        {
+            return; // Nothing to delete
+        }
+        uart_puts("\b \b"); // Move cursor back, print space to erase, move cursor back again
+        index--;
+        cli_buffer[index] = '\0'; // Update buffer
+    }
+    else
+    { // Execute command when newline character is received
+        if (index == 0)
+        {
+            // Empty command buffer, skip processing
+            uart_puts("\n");
+            uart_puts(OS_NAME);
+            uart_puts("> ");
+            return;
+        }
+
+        cli_buffer[index] = '\0'; // Terminate the buffer
+
+        // Process the completed command from cli_buffer or token
+        uart_puts("\nGot command: ");
+        if (*token != '\0')
+        {
+            uart_puts(token);
+        }
+        else
+        {
+            uart_puts(cli_buffer);
+        }
+        uart_puts("\n");
+
+        custom_strcpy(command_history[history_index], cli_buffer);
+        history_index = (history_index + 1) % HISTORY_SIZE;
+        current_history_index = history_index;
+
+        // Pass the completed command to the tokenization process
+        char *command = (*token != '\0') ? token : cli_buffer;
+        char *command_name = custom_strtok(command, " ");
+        if (*command_name != '\0')
+        {
+            if (custom_strcmp(command_name, "help") == 0)
+            {
+                char *argument = custom_strtok('\0', " ");
+                help_command(argument);
+            }
+            else if (custom_strcmp(command_name, "clear") == 0)
+            {
+                clear_command();
+            }
+            else if (custom_strcmp(command_name, "setcolor") == 0)
+            {
+                char *color_name = custom_strtok('\0', " ");
+                setcolor_command(color_name);
+            }
+            else if (custom_strcmp(command_name, "showinfo") == 0)
+            {
+                showinfo_command();
+            }
+            else
+            {
+                uart_puts("\nUnknown command: ");
+                uart_puts(command_name);
+                uart_puts("\n");
+            }
+        }
+
+        // Reset index and token for the next command
+        index = 0;
+        token[0] = '\0'; // Clear token
+        uart_puts(OS_NAME);
+        uart_puts("> ");
+    }
+}
+
+char *tab_handler(char *cli_buffer)
+{
+    int i, j;
+    int num_completions = 0;
+    int last_matching_index = -1;
+    int partial_length = custom_strlen(cli_buffer);
+
+    // Convert input buffer to lowercase for case-insensitive comparison
+    for (i = 0; i < partial_length; i++)
+    {
+        cli_buffer[i] = custom_tolower(cli_buffer[i]);
+    }
+
+    // Find completions and last matching index
+    for (i = 0; i < MAX_COMMANDS; ++i)
+    {
+        int commandLen = 0;
+        while (commands[i][commandLen] != '\0' && cli_buffer[commandLen] != '\0' &&
+               custom_tolower(commands[i][commandLen]) == cli_buffer[commandLen])
+        {
+            ++commandLen;
+        }
+        if (cli_buffer[commandLen] == '\0')
+        {
+            num_completions++;
+            last_matching_index = i;
+        }
+    }
+
+    // If there's only one completion
+    if (num_completions == 1)
+    {
+        // Return the completed command
+        return commands[last_matching_index];
+    }
+    else if (num_completions > 1)
+    { // If there are multiple completions
+        uart_puts("\nMultiple matches: ");
+        for (i = 0; i < MAX_COMMANDS; i++)
+        {
+            // Print all matched commands
+            for (j = 0; j < custom_strlen(commands[i]) && j < partial_length; j++)
+            {
+                if (commands[i][j] != cli_buffer[j])
+                {
+                    break;
+                }
+            }
+            if (j == partial_length)
+            {
+                uart_puts(commands[i]);
+                uart_puts(" ");
+            }
+        }
+        uart_puts("\n");
+    }
+    else
+    { // No match found
+        // Delete the partial command and replace it with an empty buffer
+        for (i = 0; i < partial_length; i++)
+        {
+            uart_puts("\b \b"); // Move cursor back, print space to erase, move cursor back again
+        }
+        cli_buffer[0] = '\0'; // Reset the buffer
+    }
+
+    // Return an empty string if no completion or multiple completions
+    return "";
+}
+
+void main()
+{
+    // set up serial console
+    uart_init();
+
+    // say hello
+    uart_puts("\n"
+              "\n"
+              "  #####   #####   #####   #####   #####  #        #####  ####### \n"
+              " #     # #     # #     # #     # #     # #    #  #     # #    #  \n"
+              " #             # #     # #     #       # #    #        #     #   \n"
+              "  #####   #####   ######  #####   #####  #    #   #####     #    \n"
+              "       #       #       # #     #       # ####### #         #     \n"
+              " #     # #     # #     # #     # #     #      #  #         #     \n"
+              "  #####   #####   #####   #####   #####       #  #######   #     \n"
+              "                                                                 \n"
+              " ######  #       #######    #     #####  #######                 \n"
+              " #     # #       #         # #   #     # #                       \n"
+              " #     # #       #        #   #  #       #                       \n"
+              " ######  #       #####   #     #  #####  #####                   \n"
+              " #       #       #       #######       # #                       \n"
+              " #       #       #       #     # #     # #                       \n"
+              " #       ####### ####### #     #  #####  #######                 \n"
+              "                                                                 \n"
+              "  #####  ### #     # #######                                      \n"
+              " #     #  #  #     # #                                            \n"
+              " #        #  #     # #                                            \n"
+              " #  ####  #  #     # #####                                        \n"
+              " #     #  #   #   #  #                                            \n"
+              " #     #  #    # #   #                                            \n"
+              "  #####  ###    #    #######                                      \n"
+              "                                                                 \n"
+              " #     # #######                                                 \n"
+              " ##   ## #                                                        \n"
+              " # # # # #                                                        \n"
+              " #  #  # #####                                                    \n"
+              " #     # #                                                        \n"
+              " #     # #                                                        \n"
+              " #     # #######                                                 \n"
+              "                                                                 \n"
+              " #     # ######                                                  \n"
+              " #     # #     #                                                 \n"
+              " #     # #     #                                                 \n"
+              " ####### #     #                                                 \n"
+              " #     # #     #                                                 \n"
+              " #     # #     #                                                 \n"
+              " #     # ######                                                  \n"
+              "                                                                 \n");
+
+    // Your mailbox data buffer and other initialization here
+
+    // Print OS line
+    uart_puts("\n");
+    uart_puts(OS_NAME);
+    uart_puts("> ");
+
+    // echo everything back
+    while (1)
+    {
+
+        cli();
+    }
+}

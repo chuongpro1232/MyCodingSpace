@@ -1,0 +1,1 @@
+sellingfile >> info >> num;

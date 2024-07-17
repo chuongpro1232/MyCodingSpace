@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+int main()
+{
+    int number, count = 0, sum = 0;
+
+    while (1)
+    {
+        printf("what is your number? ");
+        scanf("%d", number);
+        if (number > 0)
+        {
+            break;
+        }
+        printf("Your number is invalid\n");
+    }
+
+    while (number > 0)
+    {
+        int digit = number % 10;
+        if (digit >= 5)
+        {
+            count++;
+            sum += digit;
+        }
+        number /= 10;
+    }
+    printf("The total number that are bigger than 5 is %d\nThe sum of it is %d", count, sum);
+
+    return 0;
+}

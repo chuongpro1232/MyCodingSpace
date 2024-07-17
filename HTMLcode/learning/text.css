@@ -1,0 +1,22 @@
+
+.title{
+    font-family: 'Times New Roman', Times, serif;
+    font: size 100px;
+    width:100px;
+    font-weight: bold;
+    font-style:italic;
+    text-align:center;
+    line-height: 20px;
+}
+
+.boxtext{
+    background-color: rgb(255, 72, 72);
+    color:white;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom:10px;
+}
+.texthover:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

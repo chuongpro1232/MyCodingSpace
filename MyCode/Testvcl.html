@@ -1,0 +1,489 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Clean and Green</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/cessuncanvas-0.1.min.js"></script>
+    <script src="js/jquery-1.5.2.min.js"></script>
+    <script>
+    $(document).ready(function(){
+    
+    
+        $("#bcUrl1").click(function(){
+                window.open("http://www.britishcouncil.org/learnenglishkids"); 
+        });
+        $("#bcUrl2").click(function(){
+                window.open("http://www.britishcouncil.org/learnenglishkids"); 
+        });
+        $("#bcUrl3").click(function(){
+                window.open("http://www.britishcouncil.org/learnenglish"); 
+        });
+        $("#goBotton_botton").click(function(){
+                $("#tittleTable").css("display", "none");
+                $("#page2Table").css("display", "block");
+        });
+        $("#start_botton").click(function(){
+            $("#page2Table").css("display", "none");
+            $("#page3Table").css("display", "block");
+        });
+        $("#Scene_1").click(function(){
+            $("#page3Table").css("display", "none");
+            $("#page4Table").css("display", "block");
+        });
+        $("#Scene_2").click(function(){
+            $("#page3Table").css("display", "none");
+            $("#page5Table").css("display", "block");
+        });
+        $("#tea0_botton").click(function(){
+            Scene_1_click(0);
+        });
+        $("#comic0_botton").click(function(){
+            Scene_1_click(1);
+        });
+        $("#banana0_botton").click(function(){
+            Scene_1_click(2);
+        });
+        $("#jam0_botton").click(function(){
+            Scene_1_click(3);
+        });
+        $("#ticket0_botton").click(function(){
+            Scene_1_click(4);
+        });
+        $("#can0_botton").click(function(){
+            Scene_1_click(5);
+        });
+        $("#s1paper_botton").click(function(){
+            S1check_click('paper');
+        });
+        $("#s1plastic_botton").click(function(){
+            S1check_click('plastic&metal');
+        });
+        $("#s1glass_botton").click(function(){
+            S1check_click('glass');
+        });
+        $("#s1compost_botton").click(function(){
+            S1check_click('compost');
+        });
+        
+        
+        $("#paper0_botton").click(function(){
+            Scene_2_click(0);
+        });
+        $("#bottle0_botton").click(function(){
+            Scene_2_click(1);
+        });
+        $("#coke0_botton").click(function(){
+            Scene_2_click(2);
+        });
+        $("#ketchup0_botton").click(function(){
+            Scene_2_click(3);
+        });
+        $("#apple0_botton").click(function(){
+            Scene_2_click(4);
+        });
+        $("#pot0_botton").click(function(){
+            Scene_2_click(5);
+        });
+        $("#s2paper_botton").click(function(){
+            S2check_click('paper');
+        });
+        $("#s2plastic_botton").click(function(){
+            S2check_click('plastic&metal');
+        });
+        $("#s2glass_botton").click(function(){
+            S2check_click('glass');
+        });
+        $("#s2compost_botton").click(function(){
+            S2check_click('compost');
+        });
+        $("#re_botton").click(function(){
+            $("#page6Table").css("display", "none");
+            $("#page3Table").css("display", "block");
+            init();
+        });
+            
+        //初始化
+        var Scene_1_array=new Array(new Array(),new Array(),new Array(),new Array(),new Array(),new Array());
+        
+        var Scene_2_array=new Array(new Array(),new Array(),new Array(),new Array(),new Array(),new Array());
+        
+        
+        var selectS1cNum=0;
+        var S1aNum=0;
+        var selectS2cNum=0;
+        var S2aNum=0;
+        
+        var S1check_clickTimerout;
+        var S2check_clickTimerout;
+        
+        function init(){
+            Scene_1_array[0][0]=1;
+            Scene_1_array[0][1]="tea";
+            Scene_1_array[0][2]="compost";
+            Scene_1_array[0][3]=1;
+            Scene_1_array[1][0]=1;
+            Scene_1_array[1][1]="comic";
+            Scene_1_array[1][2]="paper";
+            Scene_1_array[1][3]=1;
+            Scene_1_array[2][0]=1;
+            Scene_1_array[2][1]="banana";
+            Scene_1_array[2][2]="compost";
+            Scene_1_array[2][3]=1;
+            Scene_1_array[3][0]=1;
+            Scene_1_array[3][1]="jam";
+            Scene_1_array[3][2]="glass";
+            Scene_1_array[3][3]=1;
+            Scene_1_array[4][0]=1;
+            Scene_1_array[4][1]="ticket";
+            Scene_1_array[4][2]="paper";
+            Scene_1_array[4][3]=1;
+            Scene_1_array[5][0]=1;
+            Scene_1_array[5][1]="can";
+            Scene_1_array[5][2]="plastic&metal";
+            Scene_1_array[5][3]=1;
+            
+            Scene_2_array[0][0]=1;
+            Scene_2_array[0][1]="paper";
+            Scene_2_array[0][2]="paper";
+            Scene_2_array[1][0]=1;
+            Scene_2_array[1][1]="bottle";
+            Scene_2_array[1][2]="plastic&metal";
+            Scene_2_array[2][0]=1;
+            Scene_2_array[2][1]="coke";
+            Scene_2_array[2][2]="glass";
+            Scene_2_array[3][0]=1;
+            Scene_2_array[3][1]="ketchup";
+            Scene_2_array[3][2]="glass";
+            Scene_2_array[4][0]=1;
+            Scene_2_array[4][1]="apple";
+            Scene_2_array[4][2]="compost";
+            Scene_2_array[5][0]=1;
+            Scene_2_array[5][1]="pot";
+            Scene_2_array[5][2]="plastic&metal";
+            
+            selectS1cNum=0;
+            S1aNum=0;
+            selectS2cNum=0;
+            S2aNum=0;
+            
+            
+            for(s1c_i=0;s1c_i<6;s1c_i++){
+                    $('#'+Scene_1_array[s1c_i][1]).css("display", "none");
+                    $('#'+Scene_1_array[s1c_i][1]+'0').css("display", "block");
+            }
+            for(s2c_i=0;s2c_i<6;s2c_i++){
+                    $('#'+Scene_2_array[s2c_i][1]).css("display", "none");
+                    $('#'+Scene_2_array[s2c_i][1]+'0').css("display", "block");
+            }
+        }
+        
+        
+        function Scene_1_click(s1cNum){
+            for(s1c_i=0;s1c_i<6;s1c_i++){
+                if(Scene_1_array[s1c_i][0]==1){
+                    $('#'+Scene_1_array[s1c_i][1]).css("display", "none");
+                    $('#'+Scene_1_array[s1c_i][1]+'0').css("display", "block");
+                    Scene_1_array[s1c_i][3]==1;
+                }
+            }
+            $('#'+Scene_1_array[s1cNum][1]+'0').css("display", "none");
+            $('#'+Scene_1_array[s1cNum][1]).css("display", "block");
+            Scene_1_array[s1cNum][3]=0;
+            selectS1cNum=s1cNum;
+        }
+        
+        function S1check_click(ccStr){
+            if (ccStr==Scene_1_array[selectS1cNum][2]&&Scene_1_array[selectS1cNum][3]==0){
+                try {
+                        document.getElementById("audio_success").pause();
+                        document.getElementById("audio_success").currentTime = 0;
+                    } catch(e) {}
+                    document.getElementById("audio_success").play();
+                $('#s1check_true').css("display", "block");
+                Scene_1_array[selectS1cNum][0]=0;
+                S1aNum++;
+                clearTimeout(S1check_clickTimerout);
+                S1check_clickTimerout=setTimeout(function(){S1check_click_true()}, 3000);
+            }else if(ccStr!=Scene_1_array[selectS1cNum][2]&&Scene_1_array[selectS1cNum][3]==0){
+                try {
+                        document.getElementById("audio_fail").pause();
+                        document.getElementById("audio_fail").currentTime = 0;
+                    } catch(e) {}
+                    document.getElementById("audio_fail").play();
+                $('#s1check_false').css("display", "block");
+                Scene_1_array[selectS1cNum][3]=1;
+                clearTimeout(S1check_clickTimerout);
+                S1check_clickTimerout=setTimeout(function(){S1check_click_false()}, 3000);
+            }
+        }
+        function S1check_click_true(){
+            $('#s1check_true').css("display", "none");
+            $('#'+Scene_1_array[selectS1cNum][1]).css("display", "none");
+            if (S1aNum>=6&&S2aNum==0){
+                $("#page4Table").css("display", "none");
+                $("#page5Table").css("display", "block");
+            }else if (S1aNum>=6&&S2aNum>=6){
+                $("#page4Table").css("display", "none");
+                $("#page6Table").css("display", "block");
+            }
+        }
+        function S1check_click_false(){
+            $('#s1check_false').css("display", "none");
+            $('#'+Scene_1_array[selectS1cNum][1]).css("display", "none");
+            $('#'+Scene_1_array[selectS1cNum][1]+'0').css("display", "block");
+        }
+        
+        function Scene_2_click(s2cNum){
+            for(s2c_i=0;s2c_i<6;s2c_i++){
+                if(Scene_2_array[s2c_i][0]==1){
+                    $('#'+Scene_2_array[s2c_i][1]).css("display", "none");
+                    $('#'+Scene_2_array[s2c_i][1]+'0').css("display", "block");
+                    Scene_2_array[s2c_i][3]==1;
+                }
+            }
+            $('#'+Scene_2_array[s2cNum][1]+'0').css("display", "none");
+            $('#'+Scene_2_array[s2cNum][1]).css("display", "block");
+            Scene_2_array[s2cNum][3]=0;
+            selectS2cNum=s2cNum;
+        }
+        
+        function S2check_click(ccStr){
+            if (ccStr==Scene_2_array[selectS2cNum][2]&&Scene_2_array[selectS2cNum][3]==0){
+                try {
+                        document.getElementById("audio_success").pause();
+                        document.getElementById("audio_success").currentTime = 0;
+                    } catch(e) {}
+                    document.getElementById("audio_success").play();
+                $('#s2check_true').css("display", "block");
+                Scene_2_array[selectS2cNum][0]=0;
+                S2aNum++;
+                clearTimeout(S2check_clickTimerout);
+                S2check_clickTimerout=setTimeout(function(){S2check_click_true()}, 3000);
+            }else if(ccStr!=Scene_2_array[selectS2cNum][2]&&Scene_2_array[selectS2cNum][3]==0){
+                try {
+                        document.getElementById("audio_fail").pause();
+                        document.getElementById("audio_fail").currentTime = 0;
+                    } catch(e) {}
+                    document.getElementById("audio_fail").play();
+                $('#s2check_false').css("display", "block");
+                Scene_2_array[selectS2cNum][3]=1;
+                clearTimeout(S2check_clickTimerout);
+                S2check_clickTimerout=setTimeout(function(){S2check_click_false()}, 3000);
+            }
+        }
+        function S2check_click_true(){
+            $('#s2check_true').css("display", "none");
+            $('#'+Scene_2_array[selectS2cNum][1]).css("display", "none");
+            if (S2aNum>=6&&S1aNum==0){
+                $("#page5Table").css("display", "none");
+                $("#page4Table").css("display", "block");
+            }else if (S1aNum>=6&&S2aNum>=6){
+                $("#page5Table").css("display", "none");
+                $("#page6Table").css("display", "block");
+            }
+        }
+        function S2check_click_false(){
+            $('#s2check_false').css("display", "none");
+            $('#'+Scene_2_array[selectS2cNum][1]).css("display", "none");
+            $('#'+Scene_2_array[selectS2cNum][1]+'0').css("display", "block");
+        }
+        init();
+    });
+    
+    
+    //去掉iphone浏览器的地址栏
+    addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+    function hideURLbar(){
+    window.scrollTo(0,1);
+    }
+    
+    function loadingJD(lStr){
+                $('#loadT_img').width(580*lStr/100);
+                $('#loadT_img').height(62);
+                $('#loadText').html("("+lStr+"% Loaded)");
+                if(lStr==100){
+                    $('#loadingTable').css("display", "none");
+                    $('#tittleTable').css("display", "block");
+                }
+            }
+            
+    
+    //图片读取类
+    ImageLoader = function(a) {
+        casual.EventDispatcher.call(this);
+        this.resources = a;
+        this.images = [];
+        this._loaded = 0
+    };
+    casual.inherit(ImageLoader, casual.EventDispatcher);
+    ImageLoader.load = function(a, b) { (new ImageLoader(a, b)).load()
+    };
+    ImageLoader.prototype.load = function() {
+        if (this._loaded > this.resources.length - 1) this.dispatchEvent({
+            type: "complete",
+            target: this,
+            params: this.images
+        });
+        else {
+            var a = new Image;
+            a.onload = casual.delegate(this._loadHandler, this);
+            a.src = this.resources[this._loaded]
+        }
+    };
+    ImageLoader.prototype._loadHandler = function(a) {
+        this.images.push({
+            src: this.resources[this._loaded],
+            image: a.target
+        });
+        this.dispatchEvent({
+            type: "loaded",
+            target: this,
+            params: a.target
+        });
+        this._loaded++;
+        this.load();
+    };
+    ImageLoader.prototype.getLoaded = function() {
+        return this.images.length
+    };
+    ImageLoader.prototype.getTotal = function() {
+        return this.resources.length
+    };
+    ImageLoader.prototype.isLoaded = function() {
+        return this.images.length == this.resources.length
+    };		
+    
+    //loading类
+    loadingClass = {
+        images: null,
+    };
+    loadingClass.startup = function() {
+        this.images = [];
+        var a = ["images/p0.png","images/apple.png","images/apple0.png","images/banana.png",  "images/banana0.png", "images/bottle.png", "images/lt.png", "images/bottle0.png", "images/can.png", "images/can0.png", "images/coke.png", "images/coke0.png", "images/comic.png", "images/comic0.png", "images/good_job.png","images/jam.png","images/jam0.png","images/ketchup.png","images/p0.png","images/p1.png","images/p2.png","images/p3.png","images/p4.png","images/p5.png","images/paper.png","images/paper0.png","images/pot.png","images/pot0.png","images/tea.png","images/tea0.png","images/ticket.png","images/ticket0.png","images/try_again.png","images/well_done.png"];
+        b = new ImageLoader(a);
+        b.addEventListener("loaded", loadingClass.onLoaded);
+        b.addEventListener("complete", loadingClass.onComplete);
+        b.load();
+        loadingClass.showProgress(0, a.length, a[0])
+    };
+    loadingClass.onLoaded = function(a) {
+        loadingClass.showProgress(a.target.getLoaded(), a.target.getTotal(), a.params.src)
+    };
+    loadingClass.onComplete = function(a) {
+        a.target.removeEventListener("loaded", loadingClass.onLoaded);
+        a.target.removeEventListener("complete", loadingClass.onComplete);
+        //加载完毕隐藏loading画面开始游戏
+        $('#loadingTable').css("display", "none");
+        $('#tittleTable').css("display", "block");
+    /*	try {
+            document.getElementById("bg_audio").pause();
+            document.getElementById("bg_audio").currentTime = 0;
+            } catch(e) {}
+            document.getElementById("bg_audio").play();*/
+    };
+    loadingClass.showProgress = function(a, b, c) {
+        var bfb = a/b*100;
+        $('#loadText').html("(" + Math.round(bfb) + "% Loaded) ");
+        $('#loadT').css("width",595*(bfb/100)+"px");
+    };
+    window.onload=loadingClass.startup();
+    </script>
+    </head>
+    
+    <body data-new-gr-c-s-check-loaded="14.1091.0" data-gr-ext-installed="">
+    <div id="loadingTable" style="display: none;">
+      <div id="loadingImg"></div>
+      <div id="loadT" style="width: 595px;"></div>
+      <div id="loadText">(100% Loaded) </div>
+      <div id="bcUrl1" class="bcUrl"></div>
+    </div>
+    <div id="tittleTable" style="display: block;">
+      <div id="tittleBj"></div>
+      <div id="goBotton_botton"></div>
+      <div id="bcUrl2" class="bcUrl"></div>
+    </div>
+    <div id="page2Table">
+      <div id="page2Bj"></div>
+      <div id="start_botton"></div>
+    </div>
+    <div id="page3Table">
+      <div id="page3Bj"></div>
+      <div id="Scene_1"></div>
+      <div id="Scene_2"></div>
+    </div>
+    <div id="page4Table">
+      <div id="page4Bj"></div>
+        <div id="tea0" style="display: block;">
+            <div id="tea0_botton"></div>
+        </div>
+        <div id="tea" style="display: none;"></div>
+        <div id="comic0" style="display: block;">
+            <div id="comic0_botton"></div>
+        </div>
+        <div id="comic" style="display: none;"></div>
+        <div id="banana0" style="display: block;">
+            <div id="banana0_botton"></div>
+        </div>
+        <div id="banana" style="display: none;"></div>
+        <div id="jam0" style="display: block;">
+            <div id="jam0_botton"></div>
+        </div>
+        <div id="jam" style="display: none;"></div>
+        <div id="ticket0" style="display: block;">
+            <div id="ticket0_botton"></div>
+        </div>
+        <div id="ticket" style="display: none;"></div>
+        <div id="can0" style="display: block;">
+            <div id="can0_botton"></div>
+        </div>
+        <div id="can" style="display: none;"></div>
+        <div id="s1check_true"></div>
+        <div id="s1check_false"></div>
+        <div id="s1paper_botton"></div>
+        <div id="s1plastic_botton"></div>
+        <div id="s1glass_botton"></div>
+        <div id="s1compost_botton"></div>
+    </div>
+    <div id="page5Table">
+      <div id="page5Bj"></div>
+      <div id="paper0" style="display: block;">
+            <div id="paper0_botton"></div>
+        </div>
+        <div id="paper" style="display: none;"></div>
+        <div id="bottle0" style="display: block;">
+            <div id="bottle0_botton"></div>
+        </div>
+        <div id="bottle" style="display: none;"></div>
+        <div id="coke0" style="display: block;">
+            <div id="coke0_botton"></div>
+        </div>
+        <div id="coke" style="display: none;"></div>
+        <div id="ketchup0" style="display: block;">
+            <div id="ketchup0_botton"></div>
+        </div>
+        <div id="ketchup" style="display: none;"></div>
+        <div id="apple0" style="display: block;">
+            <div id="apple0_botton"></div>
+        </div>
+        <div id="apple" style="display: none;"></div>
+        <div id="pot0" style="display: block;">
+            <div id="pot0_botton"></div>
+        </div>
+        <div id="pot" style="display: none;"></div>
+        <div id="s2check_true"></div>
+        <div id="s2check_false"></div>
+        <div id="s2paper_botton"></div>
+        <div id="s2plastic_botton"></div>
+        <div id="s2glass_botton"></div>
+        <div id="s2compost_botton"></div>
+    </div>
+    <div id="page6Table">
+      <div id="page6Bj"></div>
+      <div id="re_botton"></div>
+    </div>
+    <!--<audio src="sounds/sound1a.mp3" preload="auto" id="bg_audio" onEnded="this.play();"> Your browser doesn't support the audio tab． </audio>
+    <audio src="sounds/sound2.mp3" preload="auto" id="audio_bnt">Your browser doesn't support the audio tab．</audio>-->
+    <audio src="sounds/good_job.mp3" preload="auto" id="audio_success">Your browser doesn't support the audio tab．</audio>
+    <audio src="sounds/try_again.mp3" preload="auto" id="audio_fail"></audio>
+    
+    
+    <div id="torrent-scanner-popup" style="display: none;"></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

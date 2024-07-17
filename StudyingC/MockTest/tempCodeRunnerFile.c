@@ -1,0 +1,1 @@
+while (number_request >= 0 && number_request < 10);

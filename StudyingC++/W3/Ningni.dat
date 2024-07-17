@@ -1,0 +1,1 @@
+cd "c:\Users\Thanh\Desktop\FILE\Coding\StudyingC++\W3\" ; if ($?) { g++ testing2.cpp -o testing2 } ; if ($?) { .\testing2 }

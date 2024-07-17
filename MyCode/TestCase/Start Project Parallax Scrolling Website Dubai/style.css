@@ -1,0 +1,89 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap'); */
+
+body {
+  background: black;
+}
+
+.parallax img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* pointer-events: none; */
+}
+.dubaitext {
+  color: white;
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40%;
+  text-align: center;
+  color: white;
+}
+.block {
+  position: relative;
+  background: url(eating-frenzy.png);
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  width: 50%;
+  height: 400px;
+  margin: 10% auto 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-color: black; */
+  /* background: url("/Images/eating-frenzy.png"); */
+}
+
+.glow::before,
+.glow::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  /* background: linear-gradient(
+    45deg,
+    #e6fb04,
+    #ff6600,
+    #00ff66,
+    #00ffff,
+    #ff00ff,
+    #ff0099,
+    #6e0dd0,
+    #ff3300,
+    #099fff
+  ); */
+  background: white;
+  background-size: 400%;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  animation: change 40s linear infinite;
+  z-index: -1;
+}
+@keyframes change {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+/* .bigger-one {
+  background-color: black;
+  overflow: visible;
+  z-index: -10;
+  position: relative;
+} */
+.glow::after {
+  filter: blur(200px);
+  opacity: 1;
+}
