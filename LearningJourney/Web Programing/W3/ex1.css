@@ -1,0 +1,16 @@
+h1,h2,h3,h4,h5,h6{
+    color:green;
+}
+a:hover {color:green}
+a:active{
+    color:red;
+}
+.job-description{
+    color:lightblue;
+}
+tr:nth-child(even){    
+    background-color:rgb(251, 193, 193);
+}
+tr{
+    background-color:aliceblue;
+}

@@ -1,0 +1,13 @@
+li{color:green;}
+li:first-child{
+    color: red;
+}
+li:last-child{
+    color:blue;
+}
+p::first-line{
+    background-color: green;
+}
+p:first-of-type::first-line{
+    background-color:red;
+}
