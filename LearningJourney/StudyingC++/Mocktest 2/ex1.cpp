@@ -6,8 +6,8 @@ class Employee
 {
 protected:
     string name;
-    double salary;
-
+                              
+                                                     double salary;
 public:
     // constructor
     Employee(string name = "", double salary = 0)
@@ -19,7 +19,8 @@ public:
     }
 };
 
-class Manager : public Employee
+class Manager : public 
+                Employee
 { // inheritance
 private:
     double allowance;
