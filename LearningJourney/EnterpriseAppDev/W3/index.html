@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Document</title>
+   <script>
+  
+  userApiUrl = ('https://reqres.in/api/users')
+  async function fetchAsync(){
+    try{
+        let result = await fetch(userApiUrl)
+        let response = await result.json();
+        return response.data;
+    }
+    catch(error){
+        console.log("Error is"+ error.message)
+    }
+  }
+
+  async function loadCountry(){let userData = await fetchAsync();
+    console.log("userData");
+    console.log(userData)
+  }
+ 
+    </script>
+</head>
+<body>
+  <button onclick="loadCountry()"></button>
+</body>
+</html>
