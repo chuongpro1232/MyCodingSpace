@@ -1,0 +1,7 @@
+body {
+  box-sizing: border-box;
+}
+.imageContainer img {
+  height: 200px;
+  width: 100%;
+}

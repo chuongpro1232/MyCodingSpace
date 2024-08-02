@@ -1,0 +1,18 @@
+img {
+  width: 150px;
+  border: solid;
+  border-radius: 50%;
+}
+nav div {
+  display: flex;
+  justify-content: center;
+}
+input {
+  width: 60vh;
+}
+body div div {
+  text-align: center;
+}
+body {
+  box-sizing: border-box;
+}

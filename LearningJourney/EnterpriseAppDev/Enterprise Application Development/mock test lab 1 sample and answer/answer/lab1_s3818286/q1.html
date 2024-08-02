@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quiz1</title>
+</head>
+
+<style>
+    .container {  
+  display: flex;
+  align-items: center;
+}
+
+.box {
+  width: 70px;
+  border: 2px solid black;
+  margin: 0px;
+  background-color: white;
+  padding: 5px;
+  cursor: grab;
+}
+</style>
+
+<body>
+    <div class="container">
+        <div draggable="true" class="box">6</div>
+        <div draggable="true" class="box">3</div>
+        <div draggable="true" class="box">2</div>
+        <div draggable="true" class="box">4</div>
+        <div draggable="true" class="box">19</div>
+        <div draggable="true" class="box">5</div>
+        <div draggable="true" class="box">1</div>
+        <div draggable="true" class="box">24</div>
+        <div draggable="true" class="box">14</div>
+        <div draggable="true" class="box">23</div>
+
+      </div>
+
+</body>
+
+<script>
+    function startDrag(e) {
+      this.style.opacity = '0.4';
+    
+      dragSrcEl = this;
+    
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+    
+    function endDrag(e) {
+        this.style.opacity = '1';
+    
+        items.forEach(function (item) {
+          item.classList.remove('over');
+        });
+      }
+    
+    
+      function overDrag(e) {
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+    
+        return false;
+      }
+    
+      function enterDrag(e) {
+        this.classList.add('over');
+      }
+    
+      function leaveDrag (e) {
+        this.classList.remove('over');
+      }
+    
+      function handleDrop(e) {
+      e.stopPropagation();
+    
+      if (dragSrcEl !== this) {
+        dragSrcEl.innerHTML = this.innerHTML;
+        this.innerHTML = e.dataTransfer.getData('text/html');
+      }
+    
+      return false;
+    }
+    
+    let items = document.querySelectorAll('.container .box');
+    items.forEach(function(item) {
+        item.addEventListener('dragstart', startDrag);
+        item.addEventListener('dragover', overDrag);
+        item.addEventListener('dragenter', enterDrag);
+        item.addEventListener('dragleave', leaveDrag);
+        item.addEventListener('dragend', endDrag);
+        item.addEventListener('drop', handleDrop);
+      });
+    
+    </script>
+    
+
+</html>
+

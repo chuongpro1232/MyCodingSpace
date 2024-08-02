@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quiz System</title>
+	<link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+	<header class="h1">
+		<span>Teacher</span>
+	</header> 
+
+    <p></p>
+
+    <div class="detail_class" id="detail_class">
+        <p>Quiz Title</p>
+
+        <input type="text" id="detail_input_type"/>
+
+
+        <div id="quiz_instruction_and_text_box">
+            <p>Quiz instruction: </p>
+            <textarea id="quiz_instruction" rows="4" cols="50" >
+    
+        </textarea>
+        </div>
+    
+        <p></p>
+    
+        <p id="demo"></p>
+
+        <div id="questions">
+
+        </div>
+
+        <button class="submit_button_class" onclick="edit_quizz()">Edit</button>
+    
+        <button class="submit_button_class" onclick="back_to_home()">Back to teacher</button>
+
+        <div class="question_class"></div>
+    </div>
+
+	<script src="edit_from.js"></script>
+
+    </script>
+</body>
+</html>

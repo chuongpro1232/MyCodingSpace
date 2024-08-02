@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quiz3</title>
+</head>
+
+<style>
+* {
+  font-style: normal;
+  padding: 0%;
+  margin: 0%;
+  background-color: whitesmoke;
+}
+
+    .title{
+        text-align: center;
+        font-size: 1rem;
+    }
+    #container{
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: 20%;
+        padding: 1.5em;
+    }
+
+    .display{
+
+        margin-top: 50px;
+        border: 20px;
+        outline: 10px;
+        width: 300px;
+    }
+    .name{
+        font-size: 2rem;
+    }
+    .moreDetails {
+    display: none;
+  }
+  
+  .display.moreInfo .moreDetails {
+    display: inline;
+  }
+  
+  .display {
+    width: 400px;
+    margin: 20px;
+  }
+
+</style>
+
+<body>
+    
+    <div class="title">
+        <h1>PARKING PLACE FINDER</h1>
+        <label for="searchBar">SEARCH BAR</label>
+        <input type="text" name="" id="nameSearch">
+        <button>Search</button>
+    </div>
+    <div id="container">
+    </div>
+</body>
+
+<script>
+fetch('https://api.data.gov.hk/v1/carpark-info-vacancy').then((data)=>{
+    return data.json();
+}).then((completedata)=>{
+    let data = completedata.results.map((values)=>{
+        return `
+            <div class="display"
+                <h2 class="name">Name: ${values.name}</h2>
+                <p class="displayID">Car park's ID: ${values.park_Id}</p>
+                <p class="displayAddress">Address: ${values.displayAddress}</p>
+                <div class="moreDetails"
+
+                    <p class="parkType">Car park type: ${values.carpark_Type}</p>
+                    <p class="phoneNumber">Phone No: ${values.contactNo}</p>
+                    <p class="latitude">Latitude: ${values.latitude}</p>
+                    <p class="longitude">Longtitude: ${values.longitude}</p>
+                </div>
+                <button class="moreButton">Read more</moreButton>
+
+    </div>`;
+    });
+    let dt = data.join('');
+    document.querySelector("#container").innerHTML=dt;
+
+    const showMoreButton = [...document.querySelectorAll(".moreButton")];
+    const parkingInfo = [...document.querySelectorAll(".display")];
+
+    showMoreButton.reduce((data, current, index) => {
+      current.addEventListener("click", () => {
+        parkingInfo[index].classList.toggle("moreInfo");
+      });
+      return [...data, current, parkingInfo[index]];
+    }, []);
+  });
+</script>
+</html>

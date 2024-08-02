@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+html, body {
+    font-family: 'Roboto';
+
+    padding: 0;
+    margin: 0;
+    height: 100%;
+
+}
+
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+header {
+    text-align: center;
+    background-color: #fdac6e;
+    padding: 1em 1em 1em 1em;
+}
+
+main {
+    background-color: #d7f7fb;
+
+}
+.search-box {
+    display: flex;
+    padding: 1em 1em 1em 1em;
+}
+
+.parking-info {
+    width: 100%;
+    padding: 1em 1em 1em 1em;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1em
+}
+
+.card {
+    flex-basis: 200px;
+    
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-thumbnail {
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-button {
+    margin-top: auto;
+}
+
+.form-select {
+    flex-basis: 30%;
+}
+
+
+.container-fluid nav {
+    display: flex;
+    justify-content: center;
+}
+
+.opening-status {
+    text-align: center;
+    border-radius: 10px;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.opened {
+    background-color: rgb(68, 156, 68);
+}
+
+.closed {
+    background-color: rgb(181, 81, 81);
+}
+
+.selected-page {
+    background-color: rgb(78, 204, 116) !important;
+}
+
+.form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    background-color: #070200;
+    padding: 1em 1em 1em 1em;
+    color: #378b99;
+}

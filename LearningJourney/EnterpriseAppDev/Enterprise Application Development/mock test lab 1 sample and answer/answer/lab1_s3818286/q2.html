@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    * {
+    font-style: normal;
+  }
+  body {
+    background-image: url(https://img.homedy.com/store/images/2019/09/04/saigon-1400x613-637031945171153441.jpg);
+  }
+
+  .tabContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+    padding: 10px;
+  }
+
+  .tabContainer input[type="radio"] {
+    display: none;
+  }
+
+  .tabContainer label {
+    font-weight: 700;
+    width: 210px;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-right: 10px;
+    padding: 25px;
+    background: white;
+    color: black;
+  }
+
+  label#project {
+    width: 100px;
+  }
+
+  .tabContainer .tabContent {
+    width: 100%;
+    padding: 25px;
+    background-color: black;
+    color: white;
+    order: 1;
+  }
+
+  .tabContainer input[type="radio"]:checked + label {
+    background-color: black;
+    color: white;
+  }
+
+  .searchBar {
+    height: 60px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+  }
+
+  .select {
+    flex-grow: 0;
+    margin-left: 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  #type {
+      border: none;
+  }
+  #houseIcon {
+    height: 30px;
+    width: auto;
+    margin-right: 7px;
+  }
+
+  .search {
+    flex-grow: 8;
+    border-left: 1px solid white;
+    padding-left: 10px;
+  }
+
+  .searchButton {
+    flex-grow: auto;
+    margin-right: 10px;
+    background-color: orange;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 15px;
+    padding-left: 15px;
+  }
+
+  .search input {
+    width: 100%;
+    height: 60px;
+    border: none;
+    outline: none;
+    font-size: 15x;
+  }
+
+  .select select#type {
+    font-size: 17px;
+    width: 220px;
+    border: 0px;
+    outline: 0px;
+    height: 60px;
+    
+  }
+
+
+
+  #searchIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 7px;
+  }
+  .filterBar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 25px;
+  }
+
+  .locationRange,
+  .priceRange,
+  .areaRange,
+  .projectRange {
+    flex: 15;
+    margin-right: 10px;
+  }
+
+
+  .filterBar select option {
+    background: black;
+  }
+
+  select#locationRange,
+  select#priceRange,
+  select#areaRange,
+  select#projectRange {
+    height: 40px;
+    width: 100%;
+    border-radius: 5px;
+    background: black;
+    color: white;
+    font-weight: 700;
+    padding-left: 10px;
+    font-size: 14px;
+  }
+
+  .extension {
+    flex: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #refresh {
+    background-color: black;
+    border: none;
+    margin-left: 4px;
+    height: 40px;
+  }
+
+  #refreshIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  #extend {
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 5px 10px;
+    background-color: black;
+    border: none;
+    height: 40px;
+    border-right: 1.5px solid rgba(255, 255, 255, 0.4);
+    margin-right: 4px;
+  }
+
+  #arrowIcon {
+    width: 14px;
+    height: 12px;
+    margin-left: 2px;
+  }
+
+</style>
+
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>quiz2</title>
+</head>
+
+  <body>
+      <div class="tabContainer">
+          <input type="radio" id="saleTab" name="tab" checked="checked" />
+          <label for="saleTab"> Nhà đất bán</label>
+          <div class="tabContent">
+            <div class="searchBar">
+              <div class="select">
+                <img
+                  id="houseIcon"
+                  src="https://thumbs.dreamstime.com/z/two-story-house-thin-line-icon-double-fl
+                  oor-home-residential-cottage-symbol-outline-style-pictogram-white-background-building-176817051.jpg"
+                />
+                <select name="typeHouse" id="type">
+                  <option value="1">Loại nhà đất</option>
+                </select>
+              </div>
+              <div class="search">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm địa điểm, khu vực..."
+                  id="searchInput"
+                  name="searchInput"
+                />
+              </div>
+              <div class="searchButton">
+                <img
+                  id="searchIcon"
+                  src="https://img.icons8.com/ios-glyphs/30/ffffff/search--v1.png"
+                />
+                <p>Tìm kiếm</p>
+              </div>
+            </div>
+    
+            <div class="filterBar">
+              <div class="locationRange">
+                <select name="locationRange" id="locationRange">
+                  <option value="1" selected>Trên toàn quốc</option>
+                </select>
+              </div>
+    
+              <div class="priceRange">
+                <select name="priceRange" id="priceRange">
+                  <option value="1" selected>Mức giá</option>
+                </select>
+              </div>
+    
+              <div class="areaRange">
+                <select name="areaRange" id="areaRange">
+                  <option value="1">Diện tích</option>
+                </select>
+              </div>
+    
+              <div class="projectRange">
+                <select name="projectRange" id="locationRange" disabled>
+                  <option value="1">Dự án</option>
+
+                </select>
+              </div>
+    
+              <div class="extension">
+                <button id="extend">
+                  Mở rộng
+                  <img
+                    id="arrowIcon"
+                    src="https://cdn1.iconfinder.com/data/icons/hawcons/32/698956-icon-111-search-512.png"
+                  />
+                </button>
+                <button id="refresh">
+                  <img
+                    id="refreshIcon"
+                    src="https://www.kindpng.com/picc/m/220-2203430_png-file-refresh-icon-png-transparent-png-download.png"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <input type="radio" id="rentTab" name="tab" />
+          <label for="rentTab">Nhà đất cho thuê</label>
+          <input type="radio" id="projectTab" name="tab" />
+          <label id="project" for="projectTab">Dự án</label>
+        </div>
+  </body>
+  </html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Country Board</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Country Board</h1>
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search by country name" oninput="filterCountry1()">
+      <select class="box" id="regionFilter" onchange="renderCountries()">
+        <option value="">All Regions</option>
+        <option value="Africa">Africa</option>
+        <option value="Americas">Americas</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="Oceania">Oceania</option>
+      </select>
+      <select class="box" id="populationFilter" onchange="renderCountries()">
+        <option value="">All Populations</option>
+        <option value="0-5">0-5 million</option>
+        <option value="5-10">5-10 million</option>
+        <option value="10-50">10-50 million</option>
+        <option value="50-100">50-100 million</option>
+        <option value="100">>100 million</option>
+      </select>
+    </div>
+    <div id="countryList"></div>
+    <div id="pagination" class="pagination"></div>
+  </div>
+
+  <!-- <script src="script.js"></script> -->`
+  <script>
+    let countries = []; // To store the fetched country data
+    let currentPage = 1;
+    var inputFilterRegion;
+    const countriesPerPage = 10;
+    let filterCountry = "";
+  
+    // Fetch country data from API
+    fetch("https://restcountries.com/v3.1/all")
+      .then(response => response.json())
+      .then(data => {
+        countries = data;
+        console.log(countries)
+        renderCountries();
+      })
+      .catch(error => {
+        console.log("Error fetching country data:", error);
+      });
+  
+    // Render countries on the page
+    function renderCountries(filterCountry) {
+      fetch("https://restcountries.com/v3.1/all")
+      .then(response => response.json())
+      .then(data => {
+        countries = data;
+      })
+      .catch(error => {
+        console.log("Error fetching country data:", error);
+      });
+
+      var check = 0;
+      countryList.innerHTML = "";
+      const startIndex = (currentPage - 1) * countriesPerPage;
+      const endIndex = startIndex + countriesPerPage;
+      console.log(countries)
+      countries = filterCountries();
+      console.log(countries)
+      let paginatedCountries = countries.slice(startIndex, endIndex);
+      const test = inputFilterRegion;
+      var updatedFilterCountries = [];
+
+      if(filterCountry != "") {
+        countries.forEach(country => {
+          if(filterCountry === country.name.common) {
+            check = 1;
+            const countryElement = document.createElement("div");
+            countryElement.classList.add("country");
+      
+            const flagElement = document.createElement("img");
+            flagElement.src = country.flags.png;
+            countryElement.appendChild(flagElement);
+      
+            const nameElement = document.createElement("h2");
+            nameElement.textContent = country.name.common;
+            countryElement.appendChild(nameElement);
+
+            countryElement.addEventListener('click', () => {
+              window.location.href = `detail.html?country=${country.name.common}`;
+            });
+      
+            // Add other country attributes here
+      
+            countryList.appendChild(countryElement);
+          }
+        });
+      }
+
+      if(check === 0) {
+        paginatedCountries.forEach(country => {
+          const countryElement = document.createElement("div");
+          countryElement.setAttribute('class', 'flag_box')
+          countryElement.classList.add("country");
+    
+          const flagElement = document.createElement("img");
+          flagElement.src = country.flags.png;
+          countryElement.appendChild(flagElement);
+    
+          const nameElement = document.createElement("h2");
+          nameElement.textContent = country.name.common;
+          countryElement.appendChild(nameElement);
+
+          countryElement.addEventListener('click', () => {
+            window.location.href = `detail.html?country=${country.name.common}`;
+          });
+    
+          // Add other country attributes here
+    
+          countryList.appendChild(countryElement);
+      });
+      }
+
+      renderPagination();
+    }
+  
+    // Render pagination links
+    function renderPagination() {
+      pagination.innerHTML = "";
+  
+      const pageCount = Math.ceil(countries.length / countriesPerPage);
+  
+      for (let i = 1; i <= pageCount; i++) {
+        const pageLink = document.createElement("span");
+
+        pageLink.classList.add("pagination-link");
+        pageLink.textContent = i;
+        if (i === currentPage) {
+          pageLink.classList.add("active");
+        }
+        pageLink.addEventListener("click", () => {
+          currentPage = i;
+          renderCountries();
+        });
+        pagination.appendChild(pageLink);
+      }
+    }
+
+    function filterCountry1() {
+      inputFilterRegion = document.getElementById("regionFilter").value;
+      var inputFilter = document.getElementById("searchInput").value;
+      renderCountries(inputFilter);
+    }
+
+  function filterCountries() {
+    const selectedRegion = document.getElementById("regionFilter").value;
+    const selectedPopulation = document.getElementById("populationFilter").value;
+
+    let filteredCountries = countries;
+
+    if (selectedRegion) {
+      filteredCountries = filteredCountries.filter(country => country.region === selectedRegion);
+    }
+
+    if (selectedPopulation) {
+      const [minPopulation, maxPopulation] = selectedPopulation.split("-");
+      filteredCountries = filteredCountries.filter(country => {
+        const population = country.population;
+        if (maxPopulation === "100+") {
+          return population >= parseInt(minPopulation, 10) * 1000000;
+        } else {
+          return population >= parseInt(minPopulation, 10) * 1000000 && population < parseInt(maxPopulation, 10) * 1000000;
+        }
+      });
+    }
+
+    return filteredCountries;
+  }
+  </script>
+</body>
+</html>

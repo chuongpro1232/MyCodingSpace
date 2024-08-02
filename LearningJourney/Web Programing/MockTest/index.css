@@ -1,0 +1,47 @@
+h1 {
+  text-align: center;
+  color: red;
+  font: serif;
+}
+#shop-description {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 90%;
+  background-color: lightyellow;
+  border-color: rgb(85, 121, 14);
+  text-align: center;
+  border: solid 3px rgb(169, 206, 35);
+}
+#contact-us {
+  border: 2px solid black;
+  padding: 10px;
+}
+button {
+  height: 25px;
+  width: 60px;
+  background-color: rgb(173, 216, 230);
+  border: 2px solid rgb(65, 178, 216);
+  border-radius: 7px;
+}
+#form-input:active {
+  background-color: green;
+}
+
+#image {
+  width: 285px;
+  height: 285px;
+  border-radius: 800px;
+  border: solid;
+}
+#main-content {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+@media screen and (max-width: 1200px) {
+  #main-content {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column-reverse;
+  }
+}
