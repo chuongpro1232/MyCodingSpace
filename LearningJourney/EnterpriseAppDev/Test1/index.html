@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body onload="getUserData()">
+    <nav class="d-flex justify-content-between" id="nav-bar" link="grey">
+      <p class="align-middle">WonderCar</p>
+      <div>
+        <a class="align-middle" href="" id="link">Home</a>
+        <a class="align-middle href="" id="link">About us</a>
+        <a class="align-middle href="" id="link">people</a>
+        <a class="align-middle href="" id="link">contact</a>
+        <a class="align-middle href="" id="link">login</a>
+      </div>
+    </nav>
+    <h1 class="col-12 my-4 text-center">Staff list</h1>
+    <div id="search-container" class= "d-flex justify-content-center">
+        <input type="search" class="col-9 col-md-6 " placeholder="Find User By Name" id="search-input">
+    </div>
+    <div class="container">
+      <div class="row">
+    
+      </div>
+      <div id="userPanel" class="row"></div>
+    </div>
+    <script src="function.js"></script>
+  </body>
+</html>
