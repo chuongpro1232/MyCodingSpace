@@ -6,14 +6,25 @@ import org.springframework.stereotype.Component;
 @Component
 class CustomerService {
 
-    // @Autowired
-    // private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-    // CustomerInfo getCustomerInfoById(int id) {
-    //     return customerRepository.findById(id);
-    // }
+    CustomerInfo getCustomerInfoById(int id) {
+        return customerRepository.findById(id);
+    }
 
-    // CustomerInfo createCustomerInfoById(CustomerInfo customerInfo) {
-    //     return customerRepository.save(customerInfo);
-    // }
+    CustomerInfo createCustomerInfoById(CustomerInfo customerInfo) {
+        return customerRepository.save(customerInfo);
+    }
+
+    CustomerInfoBalance getCustomerInfoNobalance(int id) {
+        return customerRepository.findCustomerInfoById(id);
+    }
+
+    CustomerInfoBalance updateCustomerInfoNobalance(int id, String email) {
+        CustomerInfo customerInfo = customerRepository.findById(id);
+        customerInfo.setEmail(email);
+        customerRepository.save(customerInfo);
+        return customerRepository.findCustomerInfoById(id);
+    }
 }
