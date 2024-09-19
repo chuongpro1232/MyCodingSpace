@@ -1,0 +1,219 @@
+
+Set Up the Project:
+
+
+mkdir movie-app
+cd movie-app
+npm init -y
+npm install express mongoose ejs bcryptjs express-session connect-flash express-validator
+npm install nodemon --save-dev
+
+
+Folder Structure: Set up your project with the following structure:
+
+movie-app/
+├── models/
+│   └── Movie.js
+│   └── User.js
+├── public/
+│   └── css/
+├── routes/
+│   └── index.js
+│   └── auth.js
+├── views/
+│   └── layout.ejs
+│   └── index.ejs
+│   └── login.ejs
+│   └── add-movie.ejs
+├── .env
+├── app.js
+└── package.json
+
+1: Setting Up the Server (app.js):
+
+const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const flash = require('connect-flash');
+const path = require('path');
+const app = express();
+require('dotenv').config();
+
+// Middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+
+// Session & Flash
+app.use(
+  session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(flash());
+
+// Routes
+app.use('/', require('./routes/index'));
+app.use('/auth', require('./routes/auth'));
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err));
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+2. Database Models (models/User.js and models/Movie.js):
+Create user and movie schemas using Mongoose.
+
+const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const flash = require('connect-flash');
+const path = require('path');
+const app = express();
+require('dotenv').config();
+
+// Middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+
+// Session & Flash
+app.use(
+  session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(flash());
+
+// Routes
+app.use('/', require('./routes/index'));
+app.use('/auth', require('./routes/auth'));
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err));
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+3. Creating Routes (routes/index.js and routes/auth.js):
+const express = require('express');
+const router = express.Router();
+const Movie = require('../models/Movie');
+
+// Home Page - View Movies
+router.get('/', async (req, res) => {
+  const movies = await Movie.find({});
+  res.render('index', { movies });
+});
+
+// Add Movie Page
+router.get('/add-movie', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  res.render('add-movie');
+});
+
+// Add Movie Logic
+router.post('/add-movie', async (req, res) => {
+  const { title, releaseYear, genre } = req.body;
+  try {
+    await Movie.create({ title, releaseYear, genre });
+    req.flash('success_msg', 'Movie added successfully!');
+    res.redirect('/');
+  } catch (error) {
+    res.render('add-movie', { error: error.message });
+  }
+});
+
+module.exports = router;
+
+routes/auth.js:
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
+// Login Page
+router.get('/login', (req, res) => res.render('login'));
+
+// Login Logic
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user) {
+    req.flash('error_msg', 'User not found');
+    return res.redirect('/auth/login');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    req.flash('error_msg', 'Incorrect password');
+    return res.redirect('/auth/login');
+  }
+
+  req.session.user = user;
+  res.redirect('/');
+});
+
+// Logout
+router.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+});
+
+module.exports = router;
+
+
+4: Creating Views (views/ folder):
+views/layout.ejs: This file will serve as a layout template for all pages, including the navbar and flash messages.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Movie App</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <% if (user) { %>
+                <li><a href="/add-movie">Add Movie</a></li>
+                <li>Welcome, <%= user.username %></li>
+                <li><a href="/auth/logout">Logout</a></li>
+            <% } else { %>
+                <li><a href="/auth/login">Login</a></li>
+            <% } %>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <% if (messages.error) { %>
+            <div class="alert alert-danger"><%= messages.error %></div>
+        <% } %>
+        <% if (messages.success) { %>
+            <div class="alert alert-success"><%= messages.success %></div>
+        <% } %>
+
+        <%- body %>
+    </div>
+</body>
+</html>
